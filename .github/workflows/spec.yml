@@ -32,19 +32,19 @@ jobs:
         with:
           sqlite-version: 3.40.0
           sqlite-year: 2022
-        if: matrix.databases != 'sqlite'
+        if: matrix.databases == 'sqlite'
       - uses: samin/mysql-action@v1.3
         with:
           mysql user: granite
           mysql password: password
           mysql database: granite_db
-        if: matrix.databases != 'mysql'
+        if: matrix.databases == 'mysql'
       - uses: harmon758/postgresql-action@v1
         with:
           postgresql version: "11" # See https://hub.docker.com/_/postgres for available versions
           postgresql user: granite
           postgresql password: password
-        if: matrix.databases != 'postgresql'
+        if: matrix.databases == 'postgresql'
 
       - name: Run tests
         run: crystal spec --order=random
