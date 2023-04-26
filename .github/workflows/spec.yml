@@ -30,6 +30,8 @@ jobs:
         env:
           CURRENT_ADAPTER: sqlite
           SQLITE_DATABASE_URL: sqlite3:./granite-${{ matrix.os }}-${{ matrix.crystal }}.db
+          MYSQL_DATABASE_URL: mysql://granite:password@localhost:3306/granite_db
+          PG_DATABASE_URL: postgres://granite:password@localhost:5432/granite_db
   mysql-spec:
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +53,9 @@ jobs:
         run: crystal spec --order=random
         env:
           CURRENT_ADAPTER: mysql
+          SQLITE_DATABASE_URL: sqlite3:./granite.db
           MYSQL_DATABASE_URL: mysql://granite:password@localhost:3306/granite_db
+          PG_DATABASE_URL: postgres://granite:password@localhost:5432/granite_db
   psql-spec:
     runs-on: ubuntu-latest
     steps:
@@ -72,4 +76,6 @@ jobs:
         run: crystal spec --order=random
         env:
           CURRENT_ADAPTER: pg
+          SQLITE_DATABASE_URL: sqlite3:./granite.db
+          MYSQL_DATABASE_URL: mysql://granite:password@localhost:3306/granite_db
           PG_DATABASE_URL: postgres://granite:password@localhost:5432/granite_db
