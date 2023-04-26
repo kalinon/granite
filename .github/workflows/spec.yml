@@ -1,0 +1,55 @@
+name: build
+on:
+  push:
+  pull_request:
+    branches: [main, master]
+  schedule:
+    - cron: "0 6 * * 6" # Every Saturday 6 AM
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        crystal: [1.6.0, 1.7.2, 1.8.0, latest]
+        databases: [mysql, postgresql, sqlite]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Download source
+        uses: actions/checkout@v2
+      - name: Install Crystal
+        uses: oprypin/install-crystal@v1.8.0
+        with:
+          crystal: ${{ matrix.crystal }}
+      - name: Install shards
+        run: shards update --ignore-crystal-version
+
+      - name: Check formatting
+        run: crystal tool format --check
+        if: matrix.crystal == 'latest'
+
+      - uses: ccorsi/setup-sqlite@v1.0.1
+        with:
+          sqlite-version: 3.40.0
+          sqlite-year: 2022
+        if: matrix.databases != 'sqlite'
+      - uses: samin/mysql-action@v1.3
+        with:
+          mysql user: granite
+          mysql password: password
+          mysql database: granite_db
+        if: matrix.databases != 'mysql'
+      - uses: harmon758/postgresql-action@v1
+        with:
+          postgresql version: "11" # See https://hub.docker.com/_/postgres for available versions
+          postgresql user: granite
+          postgresql password: password
+        if: matrix.databases != 'postgresql'
+
+      - name: Run tests
+        run: crystal spec --order=random
+        env:
+          CURRENT_ADAPTER: ${{ matrix.databases }}
+          PG_DATABASE_URL: postgres://granite:password@localhost:5432/granite_db
+          MYSQL_DATABASE_URL: mysql://granite:password@localhost:3306/granite_db
+          SQLITE_DATABASE_URL: sqlite3:./granite.db
