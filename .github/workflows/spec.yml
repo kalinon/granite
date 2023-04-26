@@ -8,6 +8,7 @@ on:
 jobs:
   sqlite-spec:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
         crystal: [1.6.2, 1.7.2, 1.8.0, latest]
