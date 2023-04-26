@@ -6,7 +6,7 @@ on:
   schedule:
     - cron: "0 6 * * 6" # Every Saturday 6 AM
 jobs:
-  spec:
+  sqlite-spec:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -72,6 +72,7 @@ jobs:
           postgresql version: "10.4" # See https://hub.docker.com/_/postgres for available versions
           postgresql user: granite
           postgresql password: password
+          postgresql db: granite_db
       - name: Run tests
         run: crystal spec --order=random
         env:
