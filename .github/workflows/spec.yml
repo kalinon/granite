@@ -8,11 +8,11 @@ on:
 jobs:
   test:
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest]
         crystal: [1.6.0, 1.7.2, 1.8.0, latest]
-        databases: [mysql, postgresql, sqlite]
+        databases: [mysql, pg, sqlite]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Download source
@@ -28,23 +28,24 @@ jobs:
         run: crystal tool format --check
         if: matrix.crystal == 'latest'
 
-      - uses: ccorsi/setup-sqlite@v1.0.1
-        with:
-          sqlite-version: 3.40.0
-          sqlite-year: 2022
-        if: matrix.databases == 'sqlite'
+      # - uses: ccorsi/setup-sqlite@v1.0.1
+      #   with:
+      #     sqlite-version: 3.40.0
+      #     sqlite-year: 2022
+      #   if: matrix.databases == 'sqlite'
       - uses: samin/mysql-action@v1.3
         with:
           mysql user: granite
           mysql password: password
           mysql database: granite_db
+          mysql version: "5.7"
         if: matrix.databases == 'mysql'
       - uses: harmon758/postgresql-action@v1
         with:
-          postgresql version: "11" # See https://hub.docker.com/_/postgres for available versions
+          postgresql version: "10.4" # See https://hub.docker.com/_/postgres for available versions
           postgresql user: granite
           postgresql password: password
-        if: matrix.databases == 'postgresql'
+        if: matrix.databases == 'pg'
 
       - name: Run tests
         run: crystal spec --order=random
