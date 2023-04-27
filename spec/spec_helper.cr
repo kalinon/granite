@@ -29,7 +29,7 @@ Spec.before_each do
   Granite.settings.default_timezone = Granite::TIME_ZONE
 end
 
-Spec.after_each do
-  # https://github.com/amberframework/granite/issues/473
-  Granite::Connections["mysql"].try &.database.pool.close
-end
+# Spec.after_each do
+#   # https://github.com/amberframework/granite/issues/473
+#   Granite::Connections["mysql"].try &.database.pool.close
+# end

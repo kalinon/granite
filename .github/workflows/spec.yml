@@ -35,11 +35,21 @@ jobs:
           POSTGRES_USER: granite
           POSTGRES_PASSWORD: password
           POSTGRES_DB: granite_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
       mysql:
         image: mysql:5.7
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         env:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: granite_db
@@ -57,7 +67,7 @@ jobs:
       - name: Install shards
         run: shards update --ignore-crystal-version
       - name: Run tests
-        run: crystal spec --order=random
+        run: crystal spec --order=random -v
         env:
           CURRENT_ADAPTER: ${{ matrix.adapter }}
           SQLITE_DATABASE_URL: sqlite3:./granite.db
