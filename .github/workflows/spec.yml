@@ -61,5 +61,5 @@ jobs:
         env:
           CURRENT_ADAPTER: ${{ matrix.adapter }}
           SQLITE_DATABASE_URL: sqlite3:./granite.db
-          MYSQL_DATABASE_URL: mysql://granite:password@postgres:3306/granite_db
-          PG_DATABASE_URL: postgres://granite:password@mysql:5432/granite_db
+          MYSQL_DATABASE_URL: mysql://granite:password@mysql:3306/granite_db
+          PG_DATABASE_URL: postgres://granite:password@postgres:5432/granite_db
