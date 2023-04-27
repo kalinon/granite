@@ -21,16 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 1
+      max-parallel: 3
       matrix:
         crystal: [1.6.2, 1.7.2, 1.8.1, latest]
         adapter: [mysql, pg, sqlite]
     services:
-      # Label used to access the service container
       postgres:
-        # Docker Hub image
         image: postgres:10.4
-        # Provide the password for postgres
         env:
           POSTGRES_USER: granite
           POSTGRES_PASSWORD: password
@@ -67,7 +64,8 @@ jobs:
       - name: Install shards
         run: shards update --ignore-crystal-version
       - name: Run tests
-        run: crystal spec --order=random -v
+        timeout-minutes: 2
+        run: crystal spec --order=random
         env:
           CURRENT_ADAPTER: ${{ matrix.adapter }}
           SQLITE_DATABASE_URL: sqlite3:./granite.db
