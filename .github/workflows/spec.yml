@@ -9,9 +9,10 @@ jobs:
   sqlite-spec:
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         os: [ubuntu-latest, macos-latest]
-        crystal: [1.6.2, 1.7.2, 1.8.0, latest]
+        crystal: [1.6.2, 1.7.2, 1.8.1, latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Download source
@@ -35,13 +36,20 @@ jobs:
           PG_DATABASE_URL: postgres://granite:password@localhost:5432/granite_db
   mysql-spec:
     runs-on: ubuntu-latest
+    concurrency:
+      group: mysql
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        crystal: [1.6.2, 1.7.2, 1.8.1, latest]
     steps:
       - name: Download source
         uses: actions/checkout@v2
       - name: Install Crystal
         uses: oprypin/install-crystal@v1.8.0
         with:
-          crystal: latest
+          crystal: ${{ matrix.crystal }}
       - name: Install shards
         run: shards update --ignore-crystal-version
       - uses: samin/mysql-action@v1.3
@@ -59,13 +67,20 @@ jobs:
           PG_DATABASE_URL: postgres://granite:password@localhost:5432/granite_db
   psql-spec:
     runs-on: ubuntu-latest
+    concurrency:
+      group: psql
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        crystal: [1.6.2, 1.7.2, 1.8.1, latest]
     steps:
       - name: Download source
         uses: actions/checkout@v2
       - name: Install Crystal
         uses: oprypin/install-crystal@v1.8.0
         with:
-          crystal: latest
+          crystal: ${{ matrix.crystal }}
       - name: Install shards
         run: shards update --ignore-crystal-version
       - uses: harmon758/postgresql-action@v1
