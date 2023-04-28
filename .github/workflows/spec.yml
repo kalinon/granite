@@ -35,7 +35,7 @@ jobs:
         run: shards update --ignore-crystal-version
       - name: Run tests
         timeout-minutes: 2
-        run: crystal spec --order=random
+        run: crystal spec
         env:
           CURRENT_ADAPTER: sqlite
           SQLITE_DATABASE_URL: sqlite3:./granite.db
@@ -74,7 +74,7 @@ jobs:
         run: shards update --ignore-crystal-version
       - name: Run tests
         timeout-minutes: 2
-        run: crystal spec --order=random
+        run: crystal spec
         env:
           CURRENT_ADAPTER: mysql
           SQLITE_DATABASE_URL: sqlite3:./granite.db
@@ -89,7 +89,7 @@ jobs:
         crystal: [1.6.2, 1.7.2, 1.8.1, latest]
     services:
       postgres:
-        image: postgres:10.4
+        image: postgres:15.2
         env:
           POSTGRES_USER: granite
           POSTGRES_PASSWORD: password
@@ -113,7 +113,7 @@ jobs:
         run: shards update --ignore-crystal-version
       - name: Run tests
         timeout-minutes: 2
-        run: crystal spec --order=random
+        run: crystal spec
         env:
           CURRENT_ADAPTER: pg
           SQLITE_DATABASE_URL: sqlite3:./granite.db
